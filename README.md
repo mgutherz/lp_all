@@ -1,4 +1,8 @@
 # Notes
+
+Sharing
+https://developer.android.com/training/secure-file-sharing/setup-sharing.html
+
 //swipe onFling?
 
 private float x1,x2;
