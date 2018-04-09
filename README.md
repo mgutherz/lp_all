@@ -19,7 +19,9 @@ https://developer.android.com/reference/android/support/v7/widget/ShareActionPro
 MIME type
   text/*
   */*
-
+*something different*
+https://developer.android.com/training/secure-file-sharing/setup-sharing.html
+  
 onClick
   clear all/selected
   Invert visual / BOLD / highlight
