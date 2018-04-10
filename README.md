@@ -22,10 +22,50 @@ MIME type
 *something different*
 https://developer.android.com/training/secure-file-sharing/setup-sharing.html
   
+  
+  set SingleChoice when getting the view
+  https://stackoverflow.com/questions/7413272/how-to-set-choice-mode-single-for-listview-with-images
+  ListView list = getListView();
+    list.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+    list.setAdapter(new ArrayAdapter<String>(this, R.layout.list_item,
+  
 onClick
   clear all/selected
   Invert visual / BOLD / highlight
     https://stackoverflow.com/questions/35035839/change-color-of-one-textview-on-listview-without-change-others
     
   grab value
+  
+  *Zero sum game*
+  boxes 1-10 (min=1), Right, Left(min = 2), split
+  All your money in one box
+  
+  Robber will come in Left or Right door and take all money on that side
+  
+  pass the trash
+  
+  Dice - Bullshit Dice[] = [rnd(6),rnd(6)]
+  
+  class roll( // two 6s
+  int leng;
+  int value;
+  
+  bool gt(roll input){
+    if(this.leng > input.leng){
+      return TRUE
+    } elif(this.leng == input.leng && this.value > input.value){
+      return TRUE
+    }else{
+      return FLASE
+    }
+  }     
+  
+  if input.improb
+    input.call
+  elif roll > input
+    roll.raise
+  else //Lie
+    while fakeroll < inpu {} // fakeroll.leng <= input.leng +1
+    fakeroll.raise
+  
 </pre>
