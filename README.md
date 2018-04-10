@@ -68,4 +68,10 @@ onClick
     while fakeroll < inpu {} // fakeroll.leng <= input.leng +1
     fakeroll.raise
   
+  
+  CANVAS
+  https://google-developer-training.gitbooks.io/android-developer-advanced-course-practicals/unit-5-advanced-graphics-and-views/lesson-11-canvas/11-1a-p-create-a-simple-canvas/11-1a-p-create-a-simple-canvas.html
+  https://github.com/google-developer-training/android-advanced/blob/master/SimpleCanvas/app/src/main/java/com/example/simplecanvas/MainActivity.java
+  https://developer.android.com/reference/android/graphics/Canvas.html
+  
 </pre>
