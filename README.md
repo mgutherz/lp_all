@@ -74,4 +74,13 @@ onClick
   https://github.com/google-developer-training/android-advanced/blob/master/SimpleCanvas/app/src/main/java/com/example/simplecanvas/MainActivity.java
   https://developer.android.com/reference/android/graphics/Canvas.html
   
+  Excel Dice
+  =MOD((ROW()-1),6)+1
+  =MOD(INT((ROW()-1)/6),6)+1
+  =MOD(INT((ROW()-1)/6^2),6)+1
+  =MOD(INT((ROW()-1)/6^3),6)+1
+  =MOD(INT((ROW()-1)/6^4),6)+1
+  =MOD(INT((ROW()-1)/6^5),6)+1
+  
+  
 </pre>
