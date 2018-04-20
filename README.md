@@ -75,12 +75,30 @@ onClick
   https://developer.android.com/reference/android/graphics/Canvas.html
   
   Excel Dice
-  =MOD((ROW()-1),6)+1
-  =MOD(INT((ROW()-1)/6),6)+1
-  =MOD(INT((ROW()-1)/6^2),6)+1
-  =MOD(INT((ROW()-1)/6^3),6)+1
-  =MOD(INT((ROW()-1)/6^4),6)+1
-  =MOD(INT((ROW()-1)/6^5),6)+1
   
-  
+=MOD((ROW()-1),6)+1
+=MOD(INT((ROW()-1)/6),6)+1
+=MOD(INT((ROW()-1)/6^2),6)+1
+=MOD(INT((ROW()-1)/6^3),6)+1
+=MOD(INT((ROW()-1)/6^4),6)+1
+=MOD(INT((ROW()-1)/6^5),6)+1
+
+=COUNTIF(B1:G1, 1)
+=COUNTIF(B1:G1, 2)
+=COUNTIF(B1:G1, 3)
+=COUNTIF(B1:G1, 4)
+=COUNTIF(B1:G1, 5)
+=COUNTIF(B1:G1, 6)
+
+=IF((COUNTIF(I1:N1, 2)>0), 1,0)
+=IF((COUNTIF(I1:N1, 3)>0), 1,0)
+=IF((COUNTIF(I1:N1, 4)>0), 1,0)
+=IF((COUNTIF(I1:N1, 5)>0), 1,0)
+=IF((COUNTIF(I1:N1, 6)>0), 1,0)
+
+=IF((COUNTIF(Q1:U1, 1)>0), 1,0)
+=IF((COUNTIF(R1:U1, 1)>0), 1,0)
+=IF((COUNTIF(S1:U1, 1)>0), 1,0)
+=IF((COUNTIF(T1:U1, 1)>0), 1,0)
+=IF((COUNTIF(U1, 1)>0), 1,0)
 </pre>
