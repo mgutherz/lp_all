@@ -1,5 +1,7 @@
 <pre>
 # Notes
+PERL! http://www.ece.umd.edu/~blj/algorithmic_composition/
+
 
 Here is what the file TRVABRY128F1476445.json looks like. Keys are artist, title, timestamp, similars and tags.
 
