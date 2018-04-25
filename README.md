@@ -34,6 +34,8 @@ track_id & tags
     data = res.fetchall()
     print map(lambda x: x[0], data)
 
+more python for LMD
+http://nbviewer.jupyter.org/github/craffel/midi-dataset/blob/master/Tutorial.ipynb
 
 Sharing
 https://developer.android.com/training/secure-file-sharing/setup-sharing.html
