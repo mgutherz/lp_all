@@ -8,6 +8,9 @@ import com.musicg.wave.extension.Spectrogram;
 		spectrogram = new Spectrogram(wave, fftSampleSize, overlapFactor);
 		render.renderSpectrogram(spectrogram, outFolder + "/"+filename+"2.jpg");
 https://github.com/madyx/musicg/blob/master/src/com/musicg/wave/extension/Spectrogram.java
+
+http://www.music-ir.org/evaluation/tools.html
+https://manual.audacityteam.org/man/spectrogram_view.html
         
 Here is what the file TRVABRY128F1476445.json looks like. Keys are artist, title, timestamp, similars and tags.
 
