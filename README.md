@@ -2,7 +2,13 @@
 # Notes
 PERL! http://www.ece.umd.edu/~blj/algorithmic_composition/
 
-
+Java spectrum
+https://code.google.com/archive/p/musicg/downloads
+import com.musicg.wave.extension.Spectrogram;
+		spectrogram = new Spectrogram(wave, fftSampleSize, overlapFactor);
+		render.renderSpectrogram(spectrogram, outFolder + "/"+filename+"2.jpg");
+https://github.com/madyx/musicg/blob/master/src/com/musicg/wave/extension/Spectrogram.java
+        
 Here is what the file TRVABRY128F1476445.json looks like. Keys are artist, title, timestamp, similars and tags.
 
 {"artist": "Jos\u00e9 Merc\u00e9", "timestamp": "2011-08-16 01:34:38.887856", "similars":
