@@ -163,7 +163,13 @@ public class LiarsPoker{
 
         private String handleCall(lpHand activePlayer){
                 System.out.println("Handling Call");
-                return(activePlayer.getName());
+                int actCount = activePlayer.howMany(highCard) + (activePlayer.getNext()).howMany(highCard);
+                System.out.printf("P: %s B: %d A: %d\n", activePlayer.getName(), highCount, actCount);
+                if(actCount<highCount){
+                        return(activePlayer.getName());
+                }else{
+                        return((activePlayer.getNext()).getName());
+                }
         }
 
         private void handleBid(lpHand activePlayer){
