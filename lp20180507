@@ -1,0 +1,336 @@
+//lpUtil.java
+import java.io.*;
+import java.util.*;
+
+public class lpUtil{
+
+        private ArrayList<Integer> Hand = new ArrayList<Integer>();
+
+        public String prompt(String prompt){
+                String input = null;
+                System.out.print(prompt + " : ");
+                try{
+                        BufferedReader is = new BufferedReader (
+                                new InputStreamReader(System.in));
+                        input = is.readLine();
+                        if(input.length() == 0) return null;
+                } catch(IOException e){
+                        System.out.println("IOException: " + e);
+                }
+                return input.toLowerCase();
+        }
+}
+
+//LiarsPokerTest.java
+import java.util.*;
+
+public class LiarsPokerTest{
+
+        public static void main (String[] args){
+                System.out.println("Testing");
+                lpPlayer player = new lpPlayer();
+                lpPlayer other = new lpPlayer();
+                other.setAI();
+                player.setName("first");
+                System.out.printf("Name is: %s\n", player.getName());
+                player.setNext(other);
+                other.setNext(player);
+                System.out.printf("other Name is: %s\n", other.getName());
+                player.deal(8);
+                player.dump();
+
+                for (int i = 0; i<10; i++){
+                        System.out.println(player.howMany(i));
+                }
+                lpUtil util = new lpUtil();
+                String output = util.prompt("Type something");
+                System.out.printf("You typed: %s\n", output);
+
+
+        }
+}
+
+// lpPlayer.java
+import java.util.*;
+
+public class lpPlayer{
+
+        private ArrayList<Integer> Hand = new ArrayList<Integer>();
+
+        private lpPlayer nextPlayer;
+
+        private int aiIndex = 0;
+
+        private int totalWins = 0;
+
+        lpUtil util = new lpUtil();
+
+        private String playerName;
+
+        // AI items
+
+        private int[] counts = new int[10];
+        private int bcount=0;
+        private int bcard=0;
+
+
+        public void addWin(int win){
+                totalWins += win;
+        }
+
+        public int getWins(){
+                return(totalWins);
+        }
+
+        public String takeTurn(int highCount, int highCard){
+                String output = "AI";
+                if(aiIndex == 1){
+                        System.out.printf("%s turn\n", playerName);
+                        // Call
+                        if(highCount > counts[highCard]+1){
+                                output = "call";
+                        }else{ //bid
+                                output = String.format("bid %d %d", highCount+1, highCard);
+                        }
+                        return(output);
+                }else if(aiIndex == 2){
+                        System.out.printf("%s turn\n", playerName);
+                        dump();
+                        // Call
+                        if(highCount > counts[highCard]+1){
+                                output = "call";
+                        }else{ //bid based on highest run 
+                                if(bcard > highCard){
+                                        output = String.format("bid %d %d", highCount, bcard);
+                                }else{
+                                        output = String.format("bid %d %d", highCount+1, bcard);
+                                }
+                                System.out.printf("Bidding %s %d %d\n", output, bcount, bcard);
+                        }
+                        return(output);
+                }else{
+
+                        dump();
+                        output = util.prompt("Action");
+                        return(output);
+                }
+        }
+        public void setAIIndex(int index){
+                aiIndex = index;
+        }
+
+        public int getAIIndex(){
+                return(aiIndex);
+        }
+
+        public void setName(String name){
+                playerName = name;
+        }
+
+        public String getName(){
+                return(playerName);
+        }
+
+        public void setNext(lpPlayer nextplayer){
+                nextPlayer = nextplayer;
+        }
+
+        public lpPlayer getNext(){
+                return(nextPlayer);
+        }
+
+        public void deal(int count){
+                Hand.clear();
+                for(int i=0; i<count; i++){
+                        Hand.add((int) (Math.random() * count));
+                }
+                Collections.sort(Hand);
+                if(aiIndex > 0){
+                        System.out.println("init AI");
+                        bcount=0;
+                        for (int i = 0; i<10; i++){
+                                counts[i] = howMany(i);
+                                if(counts[i] >= bcount){
+                                        bcount = counts[i];
+                                        bcard = i;
+                                }
+                        }
+                }
+        System.out.printf("Bcount %d Bcard %d\n", bcount, bcard);
+        dump();
+        }
+
+        public void dump(){
+                System.out.printf("Player: %s\n", getName());
+                System.out.println(Arrays.toString(Hand.toArray()));
+                //System.out.println(Hand.toString);
+        }
+
+        public int howMany(int input){
+                int count =0;
+                for (int card : Hand){
+                        if(card == input){
+                                count++;
+                        }
+                }
+                return(count);
+        }
+}
+
+// LiarsPoker.java
+import java.util.*;
+
+public class LiarsPoker{
+
+        int handSize = 8;
+        int highCard;
+        int highCount;
+        // Player 
+        lpPlayer player = new lpPlayer();
+        // Opponent
+        lpPlayer opponent = new lpPlayer();
+
+        lpUtil util = new lpUtil();
+
+        private void setup(){
+                player.setNext(opponent);
+                opponent.setNext(player);
+
+                player.setName("Player");
+                opponent.setName("-AI-");
+
+                opponent.setAIIndex(2);
+                player.setAIIndex(1);
+
+                highCard = 0;
+                highCount = 0;
+
+                player.deal(handSize);
+                opponent.deal(handSize);
+
+        }
+
+        private lpPlayer play(){
+                // randomly select starter
+                lpPlayer activePlayer = opponent;
+                lpPlayer winner = null;
+                String turn;
+                String bid;
+                while(winner == null){
+                        System.out.println();
+                        System.out.printf("Current Bid - Count: %d, Card: %d\n", highCount, highCard);
+                        if(highCount == handSize*2 && highCard == 9){
+                                System.out.printf("Current Bid is maximum, must be called\n");
+                                winner = this.handleCall(activePlayer);
+                        }else{
+                                turn = activePlayer.takeTurn(highCount, highCard);
+                                // switch
+                                if(turn.indexOf("bid") != -1){
+                                        this.handleBid(activePlayer,turn);
+                                }else if(turn.equals("call")){
+                                        winner = this.handleCall(activePlayer);
+                                }else if(turn.equals("quit")){
+                                        System.out.println("Quiting");
+                                        winner = activePlayer.getNext();
+                                }else if(turn.equals("AI")){
+                                        System.out.println("AI turn complete");
+                                }else{
+                                        System.out.println("unsupported");
+                                        continue;
+                                }
+ 
+                                activePlayer = activePlayer.getNext();
+                        }
+                }
+                return(winner);
+        }
+
+        private lpPlayer handleCall(lpPlayer activePlayer){
+                System.out.printf("\nHandling Call of %d %d\n",highCount, highCard);
+                int actCount = activePlayer.howMany(highCard) + (activePlayer.getNext()).howMany(highCard);
+                activePlayer.dump();
+                (activePlayer.getNext()).dump();
+                System.out.printf("P: %s B: %d A: %d\n", activePlayer.getName(), highCount, actCount);
+                if(actCount<highCount){
+                        return(activePlayer);
+                }else{
+                        return(activePlayer.getNext());
+                }
+        }
+
+        private void handleBid(lpPlayer activePlayer, String input){
+                int count=-1;
+                int card=-1;
+                String[] inputs = input.split("[ ]");
+                if(inputs.length == 3){
+                        count = Integer.parseInt(inputs[1]);
+                        card = Integer.parseInt(inputs[2]);
+                }
+
+                System.out.println("Handling Bid");
+                boolean notDone = true;
+                while(notDone){
+                        // is input valid?
+                        if(this.checkBid(count, card)){
+                                System.out.println("Good Bid");
+                                highCount = count;
+                                highCard = card;
+                                notDone = false;
+                        }else{
+                                System.out.printf("Valid bids are:\n");
+                                if(highCard < 9){
+                                        System.out.printf("\t%d of %d or better\n", highCount, highCard+1);
+                                }
+                                if(highCount < handSize){
+                                        System.out.printf("\t%d of any card\n", highCount+1);
+                                }
+                                input = util.prompt("Bid (count card)");
+                                inputs = input.split("[ ]");
+                                if(inputs.length != 2){
+                                        continue;
+                                }
+                                count = Integer.parseInt(inputs[0]);
+                                card = Integer.parseInt(inputs[1]);
+                        }
+                }
+        }
+
+        boolean checkBid (int count, int card){
+                boolean result = true;
+                if(count > handSize*2){
+                        result = false;
+                }
+                if(card > 9){
+                        result = false;
+                }
+                if(count < highCount){
+                        result = false;
+                }else if(count == highCount){
+                        if(card<=highCard){
+                                result = false;
+                        }
+                }
+                return(result);
+
+        }
+        public static void main (String[] args){
+                System.out.println("Setting up");
+                LiarsPoker game = new LiarsPoker();
+                boolean goagain = true;
+                String input;
+                //while(goagain){
+                for(int i=0; i<100000; i++){
+                        game.setup();
+                        System.out.println("Starting");
+                        lpPlayer winner = game.play();
+                        System.out.printf("The winner was: %s\n-*-\t-*-\t-*-\n\n", winner.getName());
+                        winner.addWin(1);
+                        //input = game.util.prompt("Play again");
+                        //if(input.indexOf("y") == -1){
+                        //      goagain = false;
+                        //}
+                }
+                System.out.printf("Player: %s Wins: %d\n",game.player.getName(), game.player.getWins());
+                System.out.printf("Player: %s Wins: %d\n",game.opponent.getName(), game.opponent.getWins());
+        }
+}
