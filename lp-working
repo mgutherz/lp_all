@@ -1,10 +1,3 @@
-
-$ wc *.java
-     189     482    5975 LiarsPoker.java
-      27      62     773 LiarsPokerTest.java
-     202     530    5658 lpPlayer.java
-      21      55     485 lpUtil.java
-     439    1129   12891 total
 $ cat lpUtil.java
 import java.io.*;
 import java.util.*;
@@ -27,7 +20,7 @@ public class lpUtil{
                 return input.toLowerCase();
         }
 }
-$ cat LiarsPokerTest.java
+$ cat LiarsPokerTest.java 
 import java.util.*;
 
 public class LiarsPokerTest{
@@ -81,6 +74,8 @@ public class lpPlayer{
         private int scount=0;
         private int lcard=0;
 
+        private double[] opinions = new double[10];
+
         public void addWin(int win){
                 totalWins += win;
         }
@@ -132,6 +127,46 @@ public class lpPlayer{
                 return(output);
         }
 
+        public String turnAgent4(int highCount, int highCard){
+                String output;
+                double posStep = 1;
+                double negStep = -0.4;
+                double decayRate = 2;
+                double opinCount;
+                double opinionTreshold = 0.4;
+                double opinion;
+
+                // update opinions
+                for(int i = 0; i < 10; i++){
+                        if(i == highCard && highCount > 0){
+                                opinions[i] += posStep;
+                                System.out.printf("O up: %d\n", i);
+                        } else if(opinions[i] > 0){  // decay
+                                System.out.printf("O down: %d\n", i);
+                                //opinions[i] -= negStep;
+                                opinions[i] = opinions[i]/decayRate;
+                        }
+                }
+
+                // call or bid
+                opinion = opinions[highCard]/(opinions[highCard]+1);
+                System.out.printf("O bid: %f\n", opinion);
+
+                if(opinion > opinionTreshold){
+                        opinCount = counts[highCard] + 2;
+                } else {
+                        opinCount = counts[highCard] + 1;
+                }
+                if(highCount > opinCount){
+                        output = "call";
+                }else{ //bid based on B S or L card
+                        output = bidAgent3(highCount, highCard);
+                        //System.out.printf("Bidding %s %d %d\n", output, bcount, bcard);
+                }
+                return(output);
+        }
+
+
         public String takeTurn(int highCount, int highCard){
                 String output = "AI";
                 if(aiIndex == 1){
@@ -168,6 +203,9 @@ public class lpPlayer{
                                 output = bidAgent3(highCount, highCard);
                                 //System.out.printf("Bidding %s %d %d\n", output, bcount, bcard);
                         }
+                        return(output);
+                }else if(aiIndex == 4){
+                        output = turnAgent4(highCount, highCard);
                         return(output);
                 }else{
 
@@ -219,6 +257,7 @@ public class lpPlayer{
                         bcount=0;
                         scount=0;
                         for (int i = 0; i<=maxcard; i++){
+                                opinions[i] = 0; // init opinions
                                 counts[i] = howMany(i);
                                 if(counts[i] >= bcount){
                                         scard = bcard;
@@ -288,7 +327,7 @@ public class LiarsPoker{
                 highCard = maxCard;
                 highCount = 0;
 
-                System.out.println("Dealing...");
+                System.out.printf("\nDealing...\n\n");
                 player.deal(handSize,maxCard);
                 opponent.deal(handSize,maxCard);
 
@@ -437,7 +476,7 @@ public class LiarsPoker{
                         game.setup(playerIndex, opponentIndex);
                         lpPlayer winner = game.play();
                         game.opponent.dumpCards();
-                        //System.out.printf("The winner was: %s\n-*-\t-*-\t-*-\n\n", winner.getName());
+                        System.out.printf("The winner was: %s\n-*-\t-*-\t-*-\n\n", winner.getName());
                         winner.addWin(1);
                         //input = game.util.prompt("Play again");
                         //if(input.indexOf("y") == -1){
@@ -448,4 +487,3 @@ public class LiarsPoker{
                 System.out.printf("Player: %s Wins: %d\n",game.opponent.getName(), game.opponent.getWins());
         }
 }
-$ 
