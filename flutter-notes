@@ -1,0 +1,356 @@
+<lpplayer.dart>
+import 'package:flutter/material.dart';
+import 'dart:math';
+
+class lpPlayerSl extends StatelessWidget {
+  int id;
+  lpPlayerSl(int i) {
+    id = i;
+  }
+
+  @override
+  Widget build(BuildContext context){
+    return new Row(
+        children: <Widget>[
+          new Text(
+              'Player'+id.toString(),
+              style: new TextStyle(
+                fontWeight: FontWeight.bold,
+              )
+          ),
+        ]
+    );
+  }
+
+}
+
+class lpPlayer extends StatefulWidget {
+  int id;
+  lpPlayer(int i){id = i;}
+  @override
+  lpPlayerState createState() => new lpPlayerState(id);
+}
+
+class lpPlayerState extends State{
+  int id;
+  int handSize = 8;
+  int maxCard = 9;
+  int highCard;
+  int highCount;
+  var Hand = new List();
+
+  lpPlayerState(int i) {
+    id = i;
+    this.deal(handSize, maxCard);
+  }
+  void deal(int count, int maxcard) {
+    Hand.clear();
+    var r = new Random();
+
+    for (int i = 0; i < count; i++) {
+      Hand.add(r.nextInt(maxcard + 1));
+    }
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          new SizedBox(
+            width: 10.0,
+            height: 10.0,
+            child: new RaisedButton(
+              padding: const EdgeInsets.all(8.0),
+              /*onPressed: buttonsList[i].enabled
+                      ? () => playGame(buttonsList[i])
+                      : null,*/
+              child: new Text(
+                Hand[0].toString(),
+                style: new TextStyle(color: Colors.white, fontSize: 10.0),
+              ),
+              /*color: buttonsList[i].bg,
+                  disabledColor: buttonsList[i].bg,*/
+            ),
+          ),
+          new SizedBox(
+            width: 100.0,
+            height: 100.0,
+            child: new RaisedButton(
+              padding: const EdgeInsets.all(8.0),
+              /*onPressed: buttonsList[i].enabled
+                      ? () => playGame(buttonsList[i])
+                      : null,*/
+              child: new Text(
+                Hand[1].toString(),
+                style: new TextStyle(color: Colors.white, fontSize: 10.0),
+              ),
+              /*color: buttonsList[i].bg,
+                  disabledColor: buttonsList[i].bg,*/
+            ),
+          ),
+
+          new SizedBox(
+            width: 100.0,
+            height: 100.0,
+            child: new RaisedButton(
+              padding: const EdgeInsets.all(8.0),
+              /*onPressed: buttonsList[i].enabled
+                      ? () => playGame(buttonsList[i])
+                      : null,*/
+              child: new Text(
+                Hand[2].toString(),
+                style: new TextStyle(color: Colors.white, fontSize: 10.0),
+              ),
+              /*color: buttonsList[i].bg,
+                  disabledColor: buttonsList[i].bg,*/
+            ),
+          ),
+
+          new SizedBox(
+            width: 100.0,
+            height: 100.0,
+            child: new RaisedButton(
+              padding: const EdgeInsets.all(8.0),
+              /*onPressed: buttonsList[i].enabled
+                      ? () => playGame(buttonsList[i])
+                      : null,*/
+              child: new Text(
+                Hand[3].toString(),
+                style: new TextStyle(color: Colors.white, fontSize: 10.0),
+              ),
+              /*color: buttonsList[i].bg,
+                  disabledColor: buttonsList[i].bg,*/
+            ),
+          ),
+
+          new SizedBox(
+            width: 100.0,
+            height: 100.0,
+            child: new RaisedButton(
+              padding: const EdgeInsets.all(8.0),
+              /*onPressed: buttonsList[i].enabled
+                      ? () => playGame(buttonsList[i])
+                      : null,*/
+              child: new Text(
+                Hand[4].toString(),
+                style: new TextStyle(color: Colors.white, fontSize: 10.0),
+              ),
+              /*color: buttonsList[i].bg,
+                  disabledColor: buttonsList[i].bg,*/
+            ),
+          ),
+
+          new SizedBox(
+            width: 100.0,
+            height: 100.0,
+            child: new RaisedButton(
+              padding: const EdgeInsets.all(8.0),
+              /*onPressed: buttonsList[i].enabled
+                      ? () => playGame(buttonsList[i])
+                      : null,*/
+              child: new Text(
+                Hand[5].toString(),
+                style: new TextStyle(color: Colors.white, fontSize: 10.0),
+              ),
+              /*color: buttonsList[i].bg,
+                  disabledColor: buttonsList[i].bg,*/
+            ),
+          ),
+
+          new SizedBox(
+            width: 100.0,
+            height: 100.0,
+            child: new RaisedButton(
+              padding: const EdgeInsets.all(8.0),
+              /*onPressed: buttonsList[i].enabled
+                      ? () => playGame(buttonsList[i])
+                      : null,*/
+              child: new Text(
+                Hand[6].toString(),
+                style: new TextStyle(color: Colors.white, fontSize: 10.0),
+              ),
+              /*color: buttonsList[i].bg,
+                  disabledColor: buttonsList[i].bg,*/
+            ),
+          ),
+
+          new SizedBox(
+            width: 100.0,
+            height: 100.0,
+            child: new RaisedButton(
+              padding: const EdgeInsets.all(8.0),
+              /*onPressed: buttonsList[i].enabled
+                      ? () => playGame(buttonsList[i])
+                      : null,*/
+              child: new Text(
+                Hand[7].toString(),
+                style: new TextStyle(color: Colors.white, fontSize: 10.0),
+              ),
+              /*color: buttonsList[i].bg,
+                  disabledColor: buttonsList[i].bg,*/
+            ),
+          ),
+
+        ]
+    );
+  }
+/*
+          new Text(
+              'SPlayer'+id.toString(),
+              style: new TextStyle(
+                fontWeight: FontWeight.bold,
+              )
+          ),
+*/
+
+
+  @override
+  Widget builddead(BuildContext context) {
+    return new Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          new Expanded(
+            child: new GridView.builder(
+              padding: const EdgeInsets.all(10.0),
+              gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: handSize,
+                  childAspectRatio: 1.0,
+                  crossAxisSpacing: 9.0,
+                  mainAxisSpacing: 9.0
+              ),
+              itemCount: Hand.length,
+              itemBuilder: (context, i) =>
+              new SizedBox(
+                width: 10.0,
+                height: 10.0,
+                child: new RaisedButton(
+                  padding: const EdgeInsets.all(8.0),
+                  /*onPressed: buttonsList[i].enabled
+                      ? () => playGame(buttonsList[i])
+                      : null,*/
+                  child: new Text(
+                    Hand[i].toString(),
+                    style: new TextStyle(color: Colors.white, fontSize: 10.0),
+                  ),
+                  /*color: buttonsList[i].bg,
+                  disabledColor: buttonsList[i].bg,*/
+                ),
+              ),
+            ),
+          ),
+
+/*
+          new Text(
+              'SPlayer'+id.toString(),
+              style: new TextStyle(
+                fontWeight: FontWeight.bold,
+              )
+          ),
+*/
+        ]
+    );
+  }
+
+}
+
+<home_page.dart>
+import 'package:flutter/material.dart';
+import 'package:liarspoker_fl/lpplayer.dart';
+
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => new _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      appBar: new AppBar(
+        title: new Text("Liars Poker"),
+        centerTitle: true,
+      ),
+      body: new Column(
+
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+
+          children: <Widget>[
+            new Expanded(
+                child: new Column( // player area
+                    /*mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,*/
+                    children: <Widget>[
+                      new Text(
+                          '----',
+                          style: new TextStyle(
+                            fontWeight: FontWeight.bold,
+                          )
+                      ),
+                      new lpPlayer(1),
+                      new Text(
+                          '----',
+                          style: new TextStyle(
+                            fontWeight: FontWeight.bold,
+                          )
+                      ),
+                      new lpPlayerSl(2),
+                      //new lpPlayer(2),
+                      new Text(
+                          '----',
+                          style: new TextStyle(
+                            fontWeight: FontWeight.bold,
+                          )
+                      ),
+                    ]
+                ),
+            ),
+
+
+
+            new Container( // control area
+                padding: const EdgeInsets.all(8.0),
+                child: new Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+
+                      new Text(
+                          'Control1',
+                          style: new TextStyle(
+                            fontWeight: FontWeight.bold,
+                          )
+                      ),
+                      new Text(
+                          'Control2',
+                          style: new TextStyle(
+                            fontWeight: FontWeight.bold,
+                          )
+                      ),
+
+                  ],
+                )
+            )
+
+          ]
+
+      ),
+
+    );
+  }
+}
