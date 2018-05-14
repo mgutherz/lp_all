@@ -32,8 +32,24 @@ class ChatScreen extends StatelessWidget {
   Widget build(BuildContext context){
     return new Scaffold(
       appBar: new AppBar(title: new Text("Friendlychat")),
-      
-      body: _buildTextComposer(),
+      body: new Column(
+        children: <Widget>[
+          new Flexible(
+            child: new ListView.builder(
+              padding: new EdgeInsets.all(8.0),
+              reverse: true,
+              itemBuilder:(_, int index) +> _messages[index],
+              itenCount: _messages.length,
+            ), // ListView
+          ), // Flexible
+          new Divider(height: 1.0),
+          new Container(
+            decoration: new BoxDecoration(
+              color: Theme.of(context).cardColor);
+            child: _buildTextComposer(),
+          ), // Container
+        ], // Widget
+      ), // Column          
     ); // Scaffold
   }  // build
 } // ChatScreen
@@ -45,8 +61,34 @@ class ChatScreen extends StatefulWidget {
 }
 
 class ChatScreenState extends State<ChatScreen>{
+  final List<ChatMessage> _messages = <ChatMessage>[];
   final TextEditingController _textController = new TextEditingController();
   
+  @override
+  Widget build(BuildContext context){
+    return new Scaffold(
+      appBar: new AppBar(title: new Text("Friendlychat")),
+      body: new Column(
+        children: <Widget>[
+          new Flexible(
+            child: new ListView.builder(
+              padding: new EdgeInsets.all(8.0),
+              reverse: true,
+              itemBuilder:(_, int index) +> _messages[index],
+              itenCount: _messages.length,
+            ), // ListView
+          ), // Flexible
+          new Divider(height: 1.0),
+          new Container(
+            decoration: new BoxDecoration(
+              color: Theme.of(context).cardColor);
+            child: _buildTextComposer(),
+          ), // Container
+        ], // Widget
+      ), // Column          
+    ); // Scaffold
+  }  // build
+
   Widget _buildTextComposer() {
     return new Icontheme(
       data: new IconthemeData(color: Theme.of(context).accentColor),
@@ -78,17 +120,16 @@ class ChatScreenState extends State<ChatScreen>{
   
   void _handleSubmitted(String text) {
     _textController.clear();
+    ChatMessage message = new ChatMessage(
+      text: text,
+    ); // ChatMessage
+    setState(() {
+      _message.insert(0,message);
+    }); // setState
   }
-  
-  
-  @override
-  Widget build(BuildContext context){
-    return new Scaffold(
-      appBar: new AppBar(title: new Text("Friendlychat")),
-      body: _buildTextComposer(),
-    ); // Scaffold
-  }  // build
-} // ChatScreen
+   
+  class ChatScreen extends StatelessWidget {
+  } // ChatScreen
 
 class ChatMessage extens StatelessWidget {
   const String _name = "Matt";
@@ -121,3 +162,4 @@ class ChatMessage extens StatelessWidget {
     ); // container
   } // build
 } // ChatMessage
+
