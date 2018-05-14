@@ -1,3 +1,5 @@
+https://codelabs.developers.google.com/codelabs/flutter/
+
 <3.>
 void main(){
   runApp(
@@ -54,15 +56,22 @@ class ChatScreen extends StatelessWidget {
   }  // build
 } // ChatScreen
 
-<5.>
+<5., 6., 7.>
 class ChatScreen extends StatefulWidget {
   @override
   State createState() => new ChatScreenState();
 }
 
-class ChatScreenState extends State<ChatScreen>{
+class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin{
   final List<ChatMessage> _messages = <ChatMessage>[];
   final TextEditingController _textController = new TextEditingController();
+  
+  @override
+  void dispose(){
+    for (ChatMessage mesage in _messages)
+      message.animationcontroller.dispose();
+    super.dispose();
+  }
   
   @override
   Widget build(BuildContext context){
@@ -122,23 +131,30 @@ class ChatScreenState extends State<ChatScreen>{
     _textController.clear();
     ChatMessage message = new ChatMessage(
       text: text,
+      animationController; new AnimiationController(
+        duration: new Duration(milliseconds: 700),
+        vsync: this,
+      ), //AnimationController
     ); // ChatMessage
     setState(() {
       _message.insert(0,message);
     }); // setState
+    message.animationController.forward();
   }
    
-  class ChatScreen extends StatelessWidget {
-  } // ChatScreen
-
 class ChatMessage extens StatelessWidget {
   const String _name = "Matt";
   
-  ChatMessage({this.text});
+  ChatMessage({this.text, this.animatedController});
   final String text;
+  final AnimationController animationController;
   @override
   Widget build(BuildContext context){
-    return new Container(
+    return new SizeTransiztion(
+      sizeFction: new CurvedAnimation(
+        parent: animationcontroller, curve: Curves.easeOut),
+      axisAlignment: 0.0,
+      child: Container(
       margin: const EdgeInsets.symmetric(vertical: 10.0),
       child: new Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -159,7 +175,8 @@ class ChatMessage extens StatelessWidget {
           ), // Column
         ], // children
       ), // Row
-    ); // container
+    ) // container
+    ); // SizeTransition
   } // build
 } // ChatMessage
 
