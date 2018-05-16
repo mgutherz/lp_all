@@ -26,14 +26,35 @@ class GameScreen extends StatefulWidget {
 class GameScreenState extends State<GameScreen> {
   int handSize = 8;
   int maxCard = 9;
+          int highCard;
+        int highCount;
 
-  GameScreenState() {
+  GameScreenState() { // setup 
     handSize = 8;
     maxCard = 9;
+    player = new lpPlayer(this.handSize, this.maxCard);
+   opponent = new lpPlayer(this.handSize, this.maxCard);
+                    player.setNext(opponent);
+                opponent.setNext(player);
+
+                //player.setName("player1");
+                //opponent.setName("player2");
+
+                opponent.setAIIndex(opponentIndex);
+                player.setAIIndex(playerIndex);
+
+                highCard = maxCard;
+                highCount = 0;
+      whosFirst = opponent;
+    while(goagain){
+       //reset();
   }
 
-  lpPlayer player = new lpPlayer(this.handSize, this.maxCard);
-  lpPlayer opponent = new lpPlayer(this.handSize, this.maxCard);
+  lpPlayer player;
+  lpPlayer opponent;
+  lpPlayer whosFirst;
+  
+  
 
   @override
   Widget build(BuildContext context) {
