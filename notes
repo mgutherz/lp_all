@@ -5,12 +5,19 @@
 }else{
   iconColor = transparent
 } 
+
+winner
+Icons.star_border
+iconColor Gold
+
+
  return (
  new ListTile(
   leading: Icon(Icons.play_arrow,
       color: iconColor,
       ),
   title: Text(player.getName()),
+  trailing: wins + getWins()
 )
 )
 
