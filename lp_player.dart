@@ -9,10 +9,13 @@ class lpPlayer extends State {
   int totalWins;
   String playerName;
   bool hidden;
+  int handSize;
+  int maxCard;
 
   // AI items
 
   var counts = new List();
+  var opinions = new List();
   int bcount;
   int bcard;
   int scard;
@@ -20,6 +23,8 @@ class lpPlayer extends State {
   int lcard;
 
   lpPlayer(count, maxcard) {
+    handSize = count;
+    maxCard = maxcard;
     bcount = 0;
     bcard = 0;
     scard = 0;
@@ -27,10 +32,48 @@ class lpPlayer extends State {
     lcard = 0;
     totalWins = 0;
     hidden = false;
+
   }
 
+  void updateOpinions(int highCount, int highCard){
+    double posStep = 1.0;
+    double negStep = -0.4;
+    double decayRate = 2.0;
+
+    for(int i = 0; i < maxCard + 1; i++){
+      if(i == highCard && highCount > 0){
+        opinions[i] += posStep;
+
+      } else if(opinions[i] > 0){  // decay
+
+        //opinions[i] -= negStep;
+        opinions[i] = opinions[i]/decayRate;
+      }
+    }
+  }
+
+  double getOpinion(int highCard){
+    return (opinions[highCard]/(opinions[highCard]+1.0));
+  }
+
+  int get_lcard(){
+    return (lcard);
+  }
+
+  int get_scount(){
+    return (scount);
+  }
+
+  int get_scard(){
+    return (scard);
+  }
+
+  int get_bcard(){
+    return (bcard);
+  }
   void deal(int count, int maxcard) {
     Hand.clear();
+    opinions.clear();
     var r = new Random();
 
     for (int i = 0; i < count; i++) {
@@ -43,26 +86,31 @@ class lpPlayer extends State {
       bcount = 0;
       scount = 0;
       for (int i = 0; i <= maxcard; i++) {
+        opinions.add(0.0); // init opinions
         counts.add(howMany(i));
-        if (counts[i] >= bcount) {
+        if (howMany(i) >= bcount) {
           scard = bcard;
           scount = bcount;
           scard = bcard;
           scount = bcount;
-          bcount = counts[i];
+          bcount = howMany(i);
           bcard = i;
-        } else if (counts[i] >= scount) {
-          scount = counts[i];
+        } else if (howMany(i) >= scount) {
+          scount = howMany(i);
           scard = i;
         }
 
-        if ((counts[i] == 0) && (r.nextInt(2) > 1)) {
+        if ((howMany(i) == 0) && (r.nextInt(3) > 1)) {
           // smooth distribution of selected lie
           //System.out.printf("L changed to %d\n", i);
           lcard = i;
         }
       }
     }
+  }
+
+  int bestCard(){
+    return (bcard);
   }
 
   int howMany(int input) {
@@ -81,6 +129,7 @@ class lpPlayer extends State {
     if (aiIndex > 0) {
       hidden = true;
     }
+    playerName = '[Ai ' + aiIndex.toString() + ']';
   }
 
   int getAIIndex() {
