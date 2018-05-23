@@ -21,6 +21,8 @@ iconColor Gold
 )
 )
 
+!!Picker or ListWheelScroll for input selection
+
 retask Quit button -> Conf
 
 Game hold setupScreen = new SetupScreen(this);
