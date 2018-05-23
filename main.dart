@@ -33,6 +33,8 @@ class GameScreenState extends State<GameScreen> {
   lpPlayer player;
   lpPlayer opponent;
   lpPlayer activePlayer;
+  lpPlayer whosFirst;
+  lpPlayer winner;
 
   int iCard;
   int iCount;
@@ -66,22 +68,8 @@ class GameScreenState extends State<GameScreen> {
     });
   }
 
-  void _doDealPlayer() {
-    setState(() {
-      player.deal(handSize, maxCard);
-      logMessage('Player');
-    });
-  }
-
-  void _doDealOpponent() {
-    setState(() {
-      opponent.deal(handSize, maxCard);
-      logMessage('Opponent');
-    });
-  }
-
   void _doQuit() {
-    winner(activePlayer.getNext());
+    setWinner(activePlayer.getNext());
   }
 
   void _handleCall() {
@@ -103,9 +91,9 @@ class GameScreenState extends State<GameScreen> {
         (activePlayer.getNext()).howMany(highCard);
 
     if (actCount < highCount) {
-      winner(activePlayer);
+      setWinner(activePlayer);
     } else {
-      winner(activePlayer.getNext());
+      setWinner(activePlayer.getNext());
     }
   }
 
@@ -127,6 +115,125 @@ class GameScreenState extends State<GameScreen> {
     return (result);
   }
 
+  void bidAgent3() {
+    int bidcount = 0;
+    int bidcard = -1;
+    bool willLie = false;
+
+    var r = new Random();
+
+    if ((activePlayer.get_lcard() > highCard && highCount <= 2) ||
+        (highCount <= 1)) {
+      //RND
+      //System.out.println("check to lie");
+      if (r.nextInt(3) > 2) {
+        //System.out.println("Gonna lie");
+        willLie = true;
+        bidcard = activePlayer.get_lcard();
+      }
+    }
+    if (!willLie) {
+      // try Second best
+      if (activePlayer.get_scount() >= highCount) {
+        // RND split with BEST
+        //System.out.println("chose Second");
+        bidcard = activePlayer.get_scard();
+      } else {
+        //System.out.println("chose Best");
+        bidcard = activePlayer.get_bcard();
+      }
+    }
+    //System.out.printf("bidcard: %d\n",bidcard);
+    iCard = bidcard;
+    if (bidcard > highCard) {
+      iCount = highCount;
+    } else {
+      iCount = highCount + 1;
+    }
+
+    _handleBid();
+  }
+
+  void turnAgent4() {
+    int opinCount;
+    double opinionTreshold = 0.4;
+    double opinion;
+
+    // update opinions
+    activePlayer.updateOpinions(highCount, highCard);
+
+    // call or bid
+    opinion = activePlayer.getOpinion(highCard);
+
+    if (opinion > opinionTreshold) {
+      opinCount = activePlayer.howMany(highCard) + 2;
+    } else {
+      opinCount = activePlayer.howMany(highCard) + 2;
+    }
+    if (highCount > opinCount) {
+      _handleCall();
+    } else {
+      //bid based on B S or L card
+      bidAgent3();
+      //System.out.printf("Bidding %s %d %d\n", output, bcount, bcard);
+    }
+  }
+
+  void aiTurn() {
+    if (activePlayer.getAIIndex() == 1) {
+      //System.out.printf("%s turn\n", playerName);
+      // Call
+      if (highCount > activePlayer.howMany(highCard) + 1) {
+        _handleCall();
+      } else {
+        //bid
+        iCount = highCount + 1;
+        _handleBid();
+      }
+    } else if (activePlayer.getAIIndex() == 2) {
+      //System.out.printf("%s turn\n", playerName);
+      //dump();
+      // Call
+      if (highCount > activePlayer.howMany(highCard) + 1) {
+        _handleCall();
+      } else {
+        //bid based on highest run
+        iCard = activePlayer.bestCard();
+        if (iCard > highCard) {
+          iCount = highCount;
+        } else {
+          iCount = highCount + 1;
+        }
+        _handleBid();
+        //System.out.printf("Bidding %s %d %d\n", output, bcount, bcard);
+      }
+    } else if (activePlayer.getAIIndex() == 3) {
+      //System.out.printf("%s turn\n", playerName);
+      //dump();
+      // Call
+      if ((highCount > 2) && (highCount > activePlayer.howMany(highCard) + 1)) {
+        _handleCall();
+      } else {
+        //bid based on B S or L card
+        bidAgent3();
+        //System.out.printf("Bidding %s %d %d\n", output, bcount, bcard);
+      }
+    } else if (activePlayer.getAIIndex() == 4) {
+      turnAgent4();
+    } else {
+      // Same as 1
+      //System.out.printf("%s turn\n", playerName);
+      // Call
+      if (highCount > activePlayer.howMany(highCard) + 1) {
+        _handleCall();
+      } else {
+        //bid
+        iCount = highCount + 1;
+        _handleBid();
+      }
+    }
+  }
+
   void _handleBid() {
     String msg;
 
@@ -144,6 +251,9 @@ class GameScreenState extends State<GameScreen> {
         logMessage(msg);
         activePlayer = activePlayer.getNext();
       });
+      if (activePlayer.getAIIndex() > 0) {
+        aiTurn();
+      }
     } else {
       msg = 'Valid bids are:\n';
       if (highCard < maxCard) {
@@ -171,7 +281,31 @@ class GameScreenState extends State<GameScreen> {
       iCard = highCard;
       iCount = highCount;
       gameMessages.clear();
+      activePlayer = whosFirst.getNext();
+      whosFirst = activePlayer;
+      winner = null;
+
+      //debug
+
+      /*logMessage('ai ' +
+          opponent.get_bcard().toString() +
+          opponent.get_scard().toString() +
+          opponent.get_lcard().toString() +
+          opponent.howMany(0).toString() +
+          opponent.howMany(1).toString() +
+          opponent.howMany(2).toString() +
+          opponent.howMany(3).toString() +
+          opponent.howMany(4).toString() +
+          opponent.howMany(5).toString() +
+          opponent.howMany(6).toString() +
+          opponent.howMany(7).toString() +
+          opponent.howMany(8).toString() +
+          opponent.howMany(9).toString()
+      );*/
     });
+    if (activePlayer.getAIIndex() > 0) {
+      aiTurn();
+    }
   }
 
   GameScreenState() {
@@ -182,7 +316,7 @@ class GameScreenState extends State<GameScreen> {
     //lpPlayer opponent = new lpPlayer(handSize, maxCard);
     opponent = new lpPlayer(this.handSize, this.maxCard);
 
-    int opponentIndex = 1;
+    int opponentIndex = 4;
     int playerIndex = 0;
     opponent.setAIIndex(opponentIndex);
     player.setAIIndex(playerIndex);
@@ -191,29 +325,74 @@ class GameScreenState extends State<GameScreen> {
     opponent.setNext(player);
 
     player.setName('Matt');
-    opponent.setName('-AI-');
 
     player.deal(this.handSize, this.maxCard);
     opponent.deal(this.handSize, this.maxCard);
+
+    activePlayer = opponent;
 
     //player.setName("player1");
     //opponent.setName("player2");
 
     highCard = maxCard;
     highCount = 0;
+    whosFirst = player;
     activePlayer = player;
 
     iCard = highCard;
     iCount = highCount;
   }
 
-  void winner(lpPlayer winner) {
-    opponent.reveal();
-    logMessage('Winner:' + winner.getName());
-    winner.addWin();
+  void setWinner(lpPlayer player) {
+    setState(() {
+      opponent.reveal();
+      //logMessage('Winner:' + player.getName());
+      player.addWin();
+      winner = player;
+      build(context);
+    });
   }
 
   Widget playerTitle(lpPlayer player) {
+    Color iconColor = Colors.transparent;
+    IconData tileIcon = Icons.play_arrow;
+
+    if (player == activePlayer) {
+      iconColor = Colors.yellowAccent;
+    }
+
+    if (player == winner) {
+      iconColor = Colors.yellowAccent;
+      tileIcon = Icons.star_border;
+    }
+
+    if (player.getNext() == winner) {
+      iconColor = Colors.transparent;
+    }
+    return new Container(
+      height: 38.0,
+      child: new ListTile(
+        leading: new Icon(
+          tileIcon,
+          color: iconColor,
+        ),
+        title: new Text(
+          player.getName(),
+          style: new TextStyle(
+            fontSize: 20.0,
+          ),
+        ),
+        trailing: new Text(
+          'Wins: ' + (player.getWins()).toString(),
+          style: new TextStyle(
+            fontSize: 18.0,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget playerTitleOld(lpPlayer player) {
     String msg = '';
     if (player == activePlayer) {
       msg = ' Active > ';
@@ -222,38 +401,38 @@ class GameScreenState extends State<GameScreen> {
     return new Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-       new Container(
-         height: 70.0,
-         child: new GridView.count(
-          shrinkWrap: true,
-          scrollDirection: Axis.vertical,
-          crossAxisCount: 3,
-          children: <Widget>[
-            /*new Container(
-              height: 70.0,
-              child: new Text(
-                msg,
-                //textScaleFactor: 1.0,
-                style: new TextStyle(
-                                    fontSize: 24.0,
-                  //height: 2.0,
+        new Container(
+          height: 40.0,
+          child: new GridView.count(
+            shrinkWrap: true,
+            scrollDirection: Axis.vertical,
+            crossAxisCount: 3,
+            children: <Widget>[
+              new Container(
+                height: 50.0,
+                child: new Text(
+                  msg,
+                  //textScaleFactor: 1.0,
+                  style: new TextStyle(
+                    fontSize: 24.0,
+                    //height: 2.0,
+                  ),
                 ),
               ),
-            ),*/
-            new Container(
-              height: 10.0,
-              child: new Text(
-                player.getName(),
-                maxLines: 1,
-                textScaleFactor: 1.0,
-                /*style: new TextStyle(
-                  letterSpacing: 0.5,
-                  fontSize: 24.0,
-                  //height: 2.0,
-                ),*/
+              new Container(
+                height: 10.0,
+                child: new Text(
+                  player.getName(),
+                  maxLines: 1,
+                  textScaleFactor: 1.0,
+                  style: new TextStyle(
+                    letterSpacing: 0.5,
+                    fontSize: 24.0,
+                    //height: 2.0,
+                  ),
+                ),
               ),
-            ),
-            /*
+              /*
                 new Text(
                   '1',
                   textScaleFactor: 1.0,
@@ -300,10 +479,10 @@ class GameScreenState extends State<GameScreen> {
                   ),
                 ),
                 */
-          ],
-      ),
-       ),
-    ],
+            ],
+          ),
+        ),
+      ],
     );
 
     /*return new SizedBox(
@@ -320,6 +499,19 @@ class GameScreenState extends State<GameScreen> {
       ),
     );
     */
+  }
+
+  Widget _buildRedealButton() {
+    return new RaisedButton(
+        child: new Text(
+          "Redeal",
+          style:
+          new TextStyle(color: Colors.white, fontSize: 20.0),
+        ),
+        color: Colors.purple,
+        padding: const EdgeInsets.all(20.0),
+        onPressed: (winner == null) ? null : _doReset,
+    );
   }
 
   @override
@@ -384,19 +576,20 @@ class GameScreenState extends State<GameScreen> {
                         itemCount: gameMessages.length,
                         controller: _scrollController,
                         shrinkWrap: false,
-                        itemBuilder: (context, i) => new SizedBox(
-                              //width: 100.0,
-                              //height: 100.0,
-                              child: new Text(
-                                gameMessages[i].toString(),
-                                textScaleFactor: 1.0,
-                                style: new TextStyle(
-                                  letterSpacing: 1.5,
-                                  fontSize: 12.0,
-                                  //height: 2.0,
-                                ),
-                              ),
+                        itemBuilder: (context, i) =>
+                        new SizedBox(
+                          //width: 100.0,
+                          //height: 100.0,
+                          child: new Text(
+                            gameMessages[i].toString(),
+                            textScaleFactor: 1.0,
+                            style: new TextStyle(
+                              letterSpacing: 1.5,
+                              fontSize: 12.0,
+                              //height: 2.0,
                             ),
+                          ),
+                        ),
                       ),
                     ),
                   ],
@@ -454,7 +647,7 @@ class GameScreenState extends State<GameScreen> {
                         ),
                       ],
                     ),
-                    new Column(
+                    /*new Column(
                       // totals
                       children: <Widget>[
                         new Text(
@@ -477,7 +670,7 @@ class GameScreenState extends State<GameScreen> {
                           ),
                         ),
                       ],
-                    ),
+                    ),*/
                   ],
                 ),
                 new Row(
@@ -487,7 +680,7 @@ class GameScreenState extends State<GameScreen> {
                       child: new Text(
                         "Call",
                         style:
-                            new TextStyle(color: Colors.white, fontSize: 20.0),
+                        new TextStyle(color: Colors.white, fontSize: 20.0),
                       ),
                       color: Colors.red,
                       padding: const EdgeInsets.all(20.0),
@@ -497,7 +690,7 @@ class GameScreenState extends State<GameScreen> {
                       child: new Text(
                         "Quit",
                         style:
-                            new TextStyle(color: Colors.white, fontSize: 20.0),
+                        new TextStyle(color: Colors.white, fontSize: 20.0),
                       ),
                       color: Colors.brown,
                       padding: const EdgeInsets.all(20.0),
@@ -507,22 +700,14 @@ class GameScreenState extends State<GameScreen> {
                       child: new Text(
                         "Bid",
                         style:
-                            new TextStyle(color: Colors.white, fontSize: 20.0),
+                        new TextStyle(color: Colors.white, fontSize: 20.0),
                       ),
                       color: Colors.blue,
                       padding: const EdgeInsets.all(20.0),
                       onPressed: _handleBid,
                     ),
-                    new RaisedButton(
-                      child: new Text(
-                        "Redeal",
-                        style:
-                            new TextStyle(color: Colors.white, fontSize: 20.0),
-                      ),
-                      color: Colors.purple,
-                      padding: const EdgeInsets.all(20.0),
-                      onPressed: _doReset,
-                    ),
+                    _buildRedealButton(),
+                    
                   ],
                 ),
               ], // control area children
