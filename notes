@@ -1,0 +1,74 @@
+ Player title as ListTile
+ 
+ if (player = activePlayer){
+  iconColor = white;
+}else{
+  iconColor = transparent
+} 
+ return (
+ new ListTile(
+  leading: Icon(Icons.play_arrow,
+      color: iconColor,
+      ),
+  title: Text(player.getName()),
+)
+)
+
+retask Quit button -> Conf
+
+Game hold setupScreen = new SetupScreen(this);
+
+onPressed: () {
+  Navigator.push(
+    context,
+    new MaterialPageRoute(builder: (context) => setupScreen),
+  );
+
+Setup screen fling
+
+class SetupScreen extends StatelessWidget {
+
+string Name,
+int opponent;
+
+void SetupScreen(game){
+Name = game.player.getName();
+opponent = game.opponent.getAI();
+}
+
+saveConfig(){
+
+game.player.setName(Name);
+game.opponent.setAI(opponent);
+
+}
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      appBar: new AppBar(
+        title: new Text("lp setup"),
+      ),
+      body: new Column(
+        children: [
+          new Text('Name input'),
+          new Text('Pick opponenet'),
+          new RaisedButton(
+            onPressed: () {
+              saveconfig();
+              Navigator.pop(context);
+            },
+            child: new Text('Save'),
+          ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+Name TextInput
+
+Opponent picker
+
+
+
