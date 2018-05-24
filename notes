@@ -4,32 +4,39 @@
 
 retask Quit button -> Conf -> settings icon in toolbar MDC-104 codelab for examples
 
-Game hold setupScreen = new SetupScreen(this);
-
-onPressed: () {
-  Navigator.push(
-    context,
-    new MaterialPageRoute(builder: (context) => setupScreen),
-  );
-
 Setup screen fling
+
+Name TextInput
+
+Opponent picker
+
+<setup_screen>
+import 'package:flutter/material.dart';
+import 'package:layouttest/lp_player.dart';
+import 'package:layouttest/main.dart';
+
 
 class SetupScreen extends StatelessWidget {
 
-string Name,
-int opponent;
+  String nameString;
+  int opponentAI;
+  lpPlayer player;
+  lpPlayer opponent;
 
-void SetupScreen(game){
-Name = game.player.getName();
-opponent = game.opponent.getAI();
-}
+  SetupScreen(lpPlayer Player, lpPlayer Opponent) {
+    player = Player;
+    opponent = Opponent;
+    nameString = Player.getName();
+    opponentAI = Opponent.getAIIndex();
+  }
 
-saveConfig(){
 
-game.player.setName(Name);
-game.opponent.setAI(opponent);
 
-}
+  void saveConfig() {
+    player.setName('Tom');
+    opponent.setAIIndex(3);
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -42,21 +49,13 @@ game.opponent.setAI(opponent);
           new Text('Pick opponenet'),
           new RaisedButton(
             onPressed: () {
-              saveconfig();
+              saveConfig();
               Navigator.pop(context);
             },
             child: new Text('Save'),
           ),
-          ],
-        ),
+        ],
       ),
     );
   }
 }
-
-Name TextInput
-
-Opponent picker
-
-
-
