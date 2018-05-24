@@ -2,7 +2,7 @@
 
 !!Picker or ListWheelScroll for input selection
 
-retask Quit button -> Conf
+retask Quit button -> Conf -> setup icon in toolbar
 
 Game hold setupScreen = new SetupScreen(this);
 
