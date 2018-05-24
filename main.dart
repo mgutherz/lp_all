@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:layouttest/lp_player.dart';
+import 'package:layouttest/setup_screen.dart';
 
 void main() {
   runApp(new lpApp());
@@ -41,6 +42,7 @@ class GameScreenState extends State<GameScreen> {
 
   List<String> gameMessages = new List();
   ScrollController _scrollController;
+  SetupScreen setupScreen;
 
   @override
   void initState() {
@@ -68,7 +70,7 @@ class GameScreenState extends State<GameScreen> {
     });
   }
 
-  void _doQuit() {
+  void _doSetup() {
     setWinner(activePlayer.getNext());
   }
 
@@ -116,7 +118,7 @@ class GameScreenState extends State<GameScreen> {
   }
 
   void bidAgent3() {
-    int bidcount = 0;
+    //int bidcount = 0;
     int bidcard = -1;
     bool willLie = false;
 
@@ -124,10 +126,7 @@ class GameScreenState extends State<GameScreen> {
 
     if ((activePlayer.get_lcard() > highCard && highCount <= 2) ||
         (highCount <= 1)) {
-      //RND
-      //System.out.println("check to lie");
       if (r.nextInt(3) > 2) {
-        //System.out.println("Gonna lie");
         willLie = true;
         bidcard = activePlayer.get_lcard();
       }
@@ -136,14 +135,13 @@ class GameScreenState extends State<GameScreen> {
       // try Second best
       if (activePlayer.get_scount() >= highCount) {
         // RND split with BEST
-        //System.out.println("chose Second");
+
         bidcard = activePlayer.get_scard();
       } else {
-        //System.out.println("chose Best");
         bidcard = activePlayer.get_bcard();
       }
     }
-    //System.out.printf("bidcard: %d\n",bidcard);
+
     iCard = bidcard;
     if (bidcard > highCard) {
       iCount = highCount;
@@ -175,13 +173,11 @@ class GameScreenState extends State<GameScreen> {
     } else {
       //bid based on B S or L card
       bidAgent3();
-      //System.out.printf("Bidding %s %d %d\n", output, bcount, bcard);
     }
   }
 
   void aiTurn() {
     if (activePlayer.getAIIndex() == 1) {
-      //System.out.printf("%s turn\n", playerName);
       // Call
       if (highCount > activePlayer.howMany(highCard) + 1) {
         _handleCall();
@@ -191,8 +187,6 @@ class GameScreenState extends State<GameScreen> {
         _handleBid();
       }
     } else if (activePlayer.getAIIndex() == 2) {
-      //System.out.printf("%s turn\n", playerName);
-      //dump();
       // Call
       if (highCount > activePlayer.howMany(highCard) + 1) {
         _handleCall();
@@ -205,24 +199,20 @@ class GameScreenState extends State<GameScreen> {
           iCount = highCount + 1;
         }
         _handleBid();
-        //System.out.printf("Bidding %s %d %d\n", output, bcount, bcard);
       }
     } else if (activePlayer.getAIIndex() == 3) {
-      //System.out.printf("%s turn\n", playerName);
-      //dump();
       // Call
       if ((highCount > 2) && (highCount > activePlayer.howMany(highCard) + 1)) {
         _handleCall();
       } else {
         //bid based on B S or L card
         bidAgent3();
-        //System.out.printf("Bidding %s %d %d\n", output, bcount, bcard);
       }
     } else if (activePlayer.getAIIndex() == 4) {
       turnAgent4();
     } else {
       // Same as 1
-      //System.out.printf("%s turn\n", playerName);
+
       // Call
       if (highCount > activePlayer.howMany(highCard) + 1) {
         _handleCall();
@@ -239,7 +229,6 @@ class GameScreenState extends State<GameScreen> {
 
     // is input valid?
     if (checkBid()) {
-      //System.out.println("Good Bid");
       setState(() {
         highCount = iCount;
         highCard = iCard;
@@ -311,9 +300,9 @@ class GameScreenState extends State<GameScreen> {
   GameScreenState() {
     handSize = 8;
     maxCard = 9;
-    //lpPlayer player = new lpPlayer(handSize, maxCard);
+
     player = new lpPlayer(this.handSize, this.maxCard);
-    //lpPlayer opponent = new lpPlayer(handSize, maxCard);
+
     opponent = new lpPlayer(this.handSize, this.maxCard);
 
     int opponentIndex = 4;
@@ -331,9 +320,6 @@ class GameScreenState extends State<GameScreen> {
 
     activePlayer = opponent;
 
-    //player.setName("player1");
-    //opponent.setName("player2");
-
     highCard = maxCard;
     highCount = 0;
     whosFirst = player;
@@ -341,6 +327,8 @@ class GameScreenState extends State<GameScreen> {
 
     iCard = highCard;
     iCount = highCount;
+
+    setupScreen = new SetupScreen(player, opponent);
   }
 
   void setWinner(lpPlayer player) {
@@ -397,7 +385,7 @@ class GameScreenState extends State<GameScreen> {
     if (player == activePlayer) {
       msg = ' Active > ';
     }
-    //msg = msg + player.getName();
+
     return new Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
@@ -432,87 +420,26 @@ class GameScreenState extends State<GameScreen> {
                   ),
                 ),
               ),
-              /*
-                new Text(
-                  '1',
-                  textScaleFactor: 1.0,
-                  style: new TextStyle(
-                    letterSpacing: 0.5,
-                    fontSize: 24.0,
-                    //height: 2.0,
-                  ),
-                ),
-                new Text(
-                  '2',
-                  textScaleFactor: 1.0,
-                  style: new TextStyle(
-                    letterSpacing: 0.5,
-                    fontSize: 24.0,
-                    //height: 2.0,
-                  ),
-                ),
-                new Text(
-                  '3',
-                  textScaleFactor: 1.0,
-                  style: new TextStyle(
-                    letterSpacing: 0.5,
-                    fontSize: 24.0,
-                    //height: 2.0,
-                  ),
-                ),
-                new Text(
-                  '4',
-                  textScaleFactor: 1.0,
-                  style: new TextStyle(
-                    letterSpacing: 0.5,
-                    fontSize: 24.0,
-                    //height: 2.0,
-                  ),
-                ),
-                new Text(
-                  '5',
-                  textScaleFactor: 1.0,
-                  style: new TextStyle(
-                    letterSpacing: 0.5,
-                    fontSize: 24.0,
-                    //height: 2.0,
-                  ),
-                ),
-                */
             ],
           ),
         ),
       ],
     );
-
-    /*return new SizedBox(
-      //width: 100.0,
-      height: 24.0,
-      child: new Text(
-        msg,
-        textScaleFactor: 1.0,
-        style: new TextStyle(
-          letterSpacing: 0.5,
-          fontSize: 24.0,
-          //height: 2.0,
-        ),
-      ),
-    );
-    */
   }
 
   Widget _buildRedealButton() {
     return new RaisedButton(
-        child: new Text(
-          "Redeal",
-          style:
-          new TextStyle(color: Colors.white, fontSize: 20.0),
-        ),
-        color: Colors.purple,
-        padding: const EdgeInsets.all(20.0),
-        onPressed: (winner == null) ? null : _doReset,
+      child: new Text(
+        "Redeal",
+        style: new TextStyle(color: Colors.white, fontSize: 20.0),
+      ),
+      color: Colors.purple,
+      padding: const EdgeInsets.all(20.0),
+      onPressed: (winner == null) ? null : _doReset,
     );
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -576,20 +503,19 @@ class GameScreenState extends State<GameScreen> {
                         itemCount: gameMessages.length,
                         controller: _scrollController,
                         shrinkWrap: false,
-                        itemBuilder: (context, i) =>
-                        new SizedBox(
-                          //width: 100.0,
-                          //height: 100.0,
-                          child: new Text(
-                            gameMessages[i].toString(),
-                            textScaleFactor: 1.0,
-                            style: new TextStyle(
-                              letterSpacing: 1.5,
-                              fontSize: 12.0,
-                              //height: 2.0,
+                        itemBuilder: (context, i) => new SizedBox(
+                              //width: 100.0,
+                              //height: 100.0,
+                              child: new Text(
+                                gameMessages[i].toString(),
+                                textScaleFactor: 1.0,
+                                style: new TextStyle(
+                                  letterSpacing: 1.5,
+                                  fontSize: 12.0,
+                                  //height: 2.0,
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
                       ),
                     ),
                   ],
@@ -647,30 +573,6 @@ class GameScreenState extends State<GameScreen> {
                         ),
                       ],
                     ),
-                    /*new Column(
-                      // totals
-                      children: <Widget>[
-                        new Text(
-                          "Wins",
-                          style: new TextStyle(
-                              color: Colors.white, fontSize: 20.0),
-                        ),
-                        new Text(
-                          '${player.getName()} : ${(player.getWins())
-                              .toString()}',
-                          style: new TextStyle(
-                            fontSize: 20.0,
-                          ),
-                        ),
-                        new Text(
-                          '${opponent.getName()} : ${(opponent.getWins())
-                              .toString()}',
-                          style: new TextStyle(
-                            fontSize: 20.0,
-                          ),
-                        ),
-                      ],
-                    ),*/
                   ],
                 ),
                 new Row(
@@ -680,7 +582,7 @@ class GameScreenState extends State<GameScreen> {
                       child: new Text(
                         "Call",
                         style:
-                        new TextStyle(color: Colors.white, fontSize: 20.0),
+                            new TextStyle(color: Colors.white, fontSize: 20.0),
                       ),
                       color: Colors.red,
                       padding: const EdgeInsets.all(20.0),
@@ -688,26 +590,31 @@ class GameScreenState extends State<GameScreen> {
                     ),
                     new RaisedButton(
                       child: new Text(
-                        "Quit",
+                        "Setup",
                         style:
-                        new TextStyle(color: Colors.white, fontSize: 20.0),
+                            new TextStyle(color: Colors.white, fontSize: 20.0),
                       ),
                       color: Colors.brown,
                       padding: const EdgeInsets.all(20.0),
-                      onPressed: _doQuit,
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          new MaterialPageRoute(
+                              builder: (context) => setupScreen),
+                        );
+                      },
                     ),
                     new RaisedButton(
                       child: new Text(
                         "Bid",
                         style:
-                        new TextStyle(color: Colors.white, fontSize: 20.0),
+                            new TextStyle(color: Colors.white, fontSize: 20.0),
                       ),
                       color: Colors.blue,
                       padding: const EdgeInsets.all(20.0),
                       onPressed: _handleBid,
                     ),
                     _buildRedealButton(),
-                    
                   ],
                 ),
               ], // control area children
