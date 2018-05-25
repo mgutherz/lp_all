@@ -6,6 +6,11 @@ transparent Quit button
 
 SafeArea?
 
+Need
+scrollController → FixedExtentScrollController
+A FixedExtentScrollController to read and control the current item. [...]
+final
+
 Highlight active.
 
 Start on exiting.
