@@ -1,33 +1,8 @@
-Done - Name TextInput
 
-
-
-transparent Quit button
+disable Call and Bid buttons
 
 SafeArea?
 
 Need
 scrollController → FixedExtentScrollController
-A FixedExtentScrollController to read and control the current item. [...]
-final
-
 Highlight active.
-
-Start on exiting.
-
-new Container(
-            height: 60.0,
-            child: new ListWheelScrollView(
-              itemExtent: 40.0,
-              onSelectedItemChanged: (int index) {
-                opponentAI = index;
-              },
-              children: new List<Widget>.generate(aiList.length, (int index) {
-                return new Center(
-                  child: new Text(aiList[index],
-                    style: new TextStyle(fontSize: 20.0),
-                  ),
-                );
-              }),
-            ),
-          ),
