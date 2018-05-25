@@ -2,11 +2,34 @@ Done - Name TextInput
 
 DONE ListWheelScroll for input selection
 
-retask Quit button -> Conf -> settings icon in toolbar MDC-104 codelab for examples
+DONE retask Quit button -> Conf -> settings icon in toolbar MDC-104 codelab for examples
+
+transparent Quit button
 
 SafeArea?
 
+From main.dart
+GameScreenState{
 
+build()
+
+      appBar: new AppBar(
+        title: new Center(
+          child: new Text("Liars Poker"),
+        ),
+	actions: <Widget>[
+		IconButton(
+			icon: Icon(Icons.setting),
+			onPressed: (){
+				Navigator.push(
+                          	context,
+                          	new MaterialPageRoute(
+                              		builder: (context) => setupScreen,
+				),
+                        	);
+			},
+		),
+	],
 
 <setup_screen>
 import 'package:flutter/material.dart';
