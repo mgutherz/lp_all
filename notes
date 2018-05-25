@@ -1,12 +1,12 @@
+Done - Name TextInput
 
-
-!!Picker or ListWheelScroll for input selection
+DONE ListWheelScroll for input selection
 
 retask Quit button -> Conf -> settings icon in toolbar MDC-104 codelab for examples
 
-Name TextInput
+SafeArea?
 
-Opponent picker
+
 
 <setup_screen>
 import 'package:flutter/material.dart';
@@ -16,24 +16,32 @@ import 'package:layouttest/main.dart';
 
 class SetupScreen extends StatelessWidget {
 
-  String nameString;
+  String playerName;
   int opponentAI;
+  String opponentName;
   lpPlayer player;
   lpPlayer opponent;
+  List aiList;
 
   SetupScreen(lpPlayer Player, lpPlayer Opponent) {
     player = Player;
     opponent = Opponent;
-    nameString = Player.getName();
+    playerName = Player.getName();
     opponentAI = Opponent.getAIIndex();
+    aiList.add('Self');
+    aiList.add('AI1');
+    aiList.add('AI2');
+    aiList.add('AI3');
+    aiList.add('AI4');
   }
-
-
 
   void saveConfig() {
-    player.setName('Tom');
+    player.setName(myController.text);
+    opponent.setName(opponentName);
     opponent.setAIIndex(3);
   }
+
+final myController = new TextEditingController(playerName);
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +52,23 @@ class SetupScreen extends StatelessWidget {
       body: new Column(
         children: [
           new Text('Name input'),
+          new TextField(
+            controller: myController,
+          ),
           new Text('Pick opponenet'),
+          // block onTap with GestureDetector ?
+          new ListWheelScrollView(
+            itemEtent: 1.0,
+            onSelectedItemChange: (int index) {
+              opponentAI = index;
+              opponentName = aiList[index];
+            }
+              children: new List<Widget>.generate(aiList.length, (int index) {
+                return new Center(child:
+                  new Text(aiList[index]),
+                );
+              }),
+          ),
           new RaisedButton(
             onPressed: () {
               saveConfig();
