@@ -1,7 +1,58 @@
 
+
+    final Orientation orientation = MediaQuery.of(context).orientation;
+    final bool isLandscape = orientation == Orientation.landscape;
+    
+    _buildBody(){
+    
+    if LANDSCAPE {
+        return new row (
+          children [
+            _buildPlayArea,
+            _buildControlArea,
+            ],
+           );
+      }else{
+        return new column (
+          children [
+            _buildPlayArea,
+            _buildControlArea,
+            ],
+           );
+      }
+    
+    
+    
 disable Call and Bid buttons
 
-SafeArea?
+  Widget _buildBidButton() {
+    return new RaisedButton(
+      child: new Text(
+        "Bid",
+                        style:
+                            new TextStyle(color: Colors.white, fontSize: 20.0),
+                      ),
+                      color: Colors.blue,
+                      padding: const EdgeInsets.all(20.0),
+      onPressed: (winner == null) ? _handleBid : null,
+    );
+  }
+
+
+
+  Widget _buildRedealButton() {
+    return new RaisedButton(
+      child: new Text(
+        "Call",
+                        style:
+                            new TextStyle(color: Colors.white, fontSize: 20.0),
+                      ),
+                      color: Colors.red,
+                      padding: const EdgeInsets.all(20.0),
+      onPressed: (winner == null) ? _handleCall : null,
+    );
+  }
+
 
 Need
 scrollController → FixedExtentScrollController
