@@ -70,10 +70,6 @@ class GameScreenState extends State<GameScreen> {
     });
   }
 
-  void _doSetup() {
-    setWinner(activePlayer.getNext());
-  }
-
   void _handleCall() {
     logMessage(activePlayer.getName() + ' Calling');
     handleCall(activePlayer);
@@ -328,7 +324,7 @@ class GameScreenState extends State<GameScreen> {
     iCard = highCard;
     iCount = highCount;
 
-    setupScreen = new SetupScreen(player, opponent);
+    //setupScreen = new SetupScreen(player, opponent);
   }
 
   void setWinner(lpPlayer player) {
@@ -380,53 +376,6 @@ class GameScreenState extends State<GameScreen> {
     );
   }
 
-  Widget playerTitleOld(lpPlayer player) {
-    String msg = '';
-    if (player == activePlayer) {
-      msg = ' Active > ';
-    }
-
-    return new Column(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        new Container(
-          height: 40.0,
-          child: new GridView.count(
-            shrinkWrap: true,
-            scrollDirection: Axis.vertical,
-            crossAxisCount: 3,
-            children: <Widget>[
-              new Container(
-                height: 50.0,
-                child: new Text(
-                  msg,
-                  //textScaleFactor: 1.0,
-                  style: new TextStyle(
-                    fontSize: 24.0,
-                    //height: 2.0,
-                  ),
-                ),
-              ),
-              new Container(
-                height: 10.0,
-                child: new Text(
-                  player.getName(),
-                  maxLines: 1,
-                  textScaleFactor: 1.0,
-                  style: new TextStyle(
-                    letterSpacing: 0.5,
-                    fontSize: 24.0,
-                    //height: 2.0,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget _buildRedealButton() {
     return new RaisedButton(
       child: new Text(
@@ -439,7 +388,291 @@ class GameScreenState extends State<GameScreen> {
     );
   }
 
+  Widget _buildBidButton() {
+    return new RaisedButton(
+      child: new Text(
+        "Bid",
+        style: new TextStyle(color: Colors.white, fontSize: 20.0),
+      ),
+      color: Colors.blue,
+      padding: const EdgeInsets.all(20.0),
+      onPressed: (winner == null) ? _handleBid : null,
+    );
+  }
 
+  Widget _buildCalllButton() {
+    return new RaisedButton(
+      child: new Text(
+        "Call",
+        style: new TextStyle(color: Colors.white, fontSize: 20.0),
+      ),
+      color: Colors.red,
+      padding: const EdgeInsets.all(20.0),
+      onPressed: (winner == null) ? _handleCall : null,
+    );
+  }
+
+  Widget _buildControlArea() {
+    return new Column(
+      // Control Area
+      children: <Widget>[
+        new Text(
+          'Game Messages:',
+          style: new TextStyle(fontSize: 20.0),
+        ),
+        new SizedBox(
+          height: 175.0,
+          child: new ListView.builder(
+            itemCount: gameMessages.length,
+            controller: _scrollController,
+            shrinkWrap: false,
+            itemBuilder: (context, i) => new SizedBox(
+                  //width: 100.0,
+                  //height: 100.0,
+                  child: new Text(
+                    gameMessages[i].toString(),
+                    textScaleFactor: 1.0,
+                    style: new TextStyle(
+                      letterSpacing: 1.5,
+                      fontSize: 12.0,
+                      //height: 2.0,
+                    ),
+                  ),
+                ),
+          ),
+        ),
+        new Row(
+          children: <Widget>[
+            new Text(
+              'Count: ${iCount.toString()}',
+              style: new TextStyle(
+                fontSize: 20.0,
+              ),
+            ),
+            new CupertinoSlider(
+                value: iCount.toDouble(),
+                min: highCount.toDouble(),
+                max: highCount.toDouble() + 4.0,
+                divisions: 4,
+                onChanged: (double countValue) {
+                  setState(() {
+                    iCount = countValue.toInt();
+                  });
+                }),
+          ],
+        ),
+        new Row(
+          children: <Widget>[
+            new Text(
+              ' Card: ${iCard.toString()}',
+              style: new TextStyle(
+                fontSize: 20.0,
+              ),
+            ),
+            new CupertinoSlider(
+                value: iCard.toDouble(),
+                min: 0.0,
+                max: maxCard.toDouble(),
+                divisions: maxCard,
+                onChanged: (double cardValue) {
+                  setState(() {
+                    iCard = cardValue.toInt();
+                  });
+                }),
+          ],
+        ),
+        new Row(
+          // button row
+          // actions
+          children: <Widget>[
+            _buildCalllButton(),
+            new RaisedButton(
+              child: new Text(
+                "",
+                style: new TextStyle(color: Colors.white, fontSize: 20.0),
+              ),
+              color: Colors.transparent,
+              padding: const EdgeInsets.all(20.0),
+              onPressed: () {},
+            ),
+            _buildBidButton(),
+            _buildRedealButton(),
+          ],
+        ),
+      ], // control area children
+    );
+  }
+
+  Widget _buildControlAreaLS() {
+    return new Container(
+      child: new Column(
+        children: <Widget>[
+          new Text('Control Area'),
+          new Row(
+            // actions
+            children: <Widget>[
+              _buildCalllButton(),
+              new RaisedButton(
+                child: new Text(
+                  "",
+                  style: new TextStyle(color: Colors.white, fontSize: 20.0),
+                ),
+                color: Colors.transparent,
+                padding: const EdgeInsets.all(20.0),
+                onPressed: () {},
+              ),
+              _buildBidButton(),
+              _buildRedealButton(),
+            ],
+          ),
+          // Control Area
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPlayArea() {
+    return new Column(
+      // play area
+      children: <Widget>[
+        playerTitle(opponent),
+        new Center(child: opponent.build(context)),
+        playerTitle(player),
+        new Center(child: player.build(context)),
+        new Center(
+          heightFactor: 1.2,
+          widthFactor: 1.2,
+          child: new Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            // current state
+            children: <Widget>[
+              new Text(
+                'Current Bid: ',
+                style: new TextStyle(fontSize: 20.0),
+              ),
+              new RaisedButton(
+                child: new Text(
+                  highCount.toString(),
+                  style: new TextStyle(color: Colors.white, fontSize: 16.0),
+                ),
+                padding: const EdgeInsets.all(1.0),
+              ),
+              new RaisedButton(
+                child: new Text(
+                  highCard.toString(),
+                  style: new TextStyle(color: Colors.white, fontSize: 16.0),
+                ),
+                padding: const EdgeInsets.all(1.0),
+              ),
+            ],
+          ),
+        ),
+        /*new Column(
+          children: <Widget>[
+            new Text(
+              'Game Messages:',
+              style: new TextStyle(fontSize: 20.0),
+            ),
+            new SizedBox(
+              height: 175.0,
+              child: new ListView.builder(
+                itemCount: gameMessages.length,
+                controller: _scrollController,
+                shrinkWrap: false,
+                itemBuilder: (context, i) => new SizedBox(
+                      //width: 100.0,
+                      //height: 100.0,
+                      child: new Text(
+                        gameMessages[i].toString(),
+                        textScaleFactor: 1.0,
+                        style: new TextStyle(
+                          letterSpacing: 1.5,
+                          fontSize: 12.0,
+                          //height: 2.0,
+                        ),
+                      ),
+                    ),
+              ),
+            ),
+          ],
+        ),*/
+      ],
+    );
+  }
+
+  Widget _buildPlayAreaLS() {
+    return new Container(
+      height: 250.0,
+      width: 300.0,
+      child: new Column(
+        children: <Widget>[
+          //new Text('Play Area'),
+          playerTitle(opponent),
+          new Center(child: opponent.build(context)),
+          playerTitle(player),
+          new Center(child: player.build(context)),
+          new Center(
+            heightFactor: 1.2,
+            widthFactor: 1.2,
+            child: new Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              // current state
+              children: <Widget>[
+                new Text(
+                  'Current Bid: ',
+                  style: new TextStyle(fontSize: 20.0),
+                ),
+                new RaisedButton(
+                  child: new Text(
+                    highCount.toString(),
+                    style: new TextStyle(color: Colors.white, fontSize: 16.0),
+                  ),
+                  padding: const EdgeInsets.all(1.0),
+                ),
+                new RaisedButton(
+                  child: new Text(
+                    highCard.toString(),
+                    style: new TextStyle(color: Colors.white, fontSize: 16.0),
+                  ),
+                  padding: const EdgeInsets.all(1.0),
+                ),
+              ],
+            ),
+          ),
+          // Control Area
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBody() {
+    Orientation orientation = MediaQuery.of(context).orientation;
+    bool isLandscape = orientation == Orientation.landscape;
+
+    if (isLandscape) {
+      return new Container(
+        //color: Colors.teal ,
+        child: new Row(
+          // Home Page
+          children: <Widget>[
+            _buildPlayAreaLS(), // not ok
+            _buildControlAreaLS(), // not ok
+          ],
+        ),
+      );
+    } else {
+      return new Container(
+        //color: Colors.teal ,
+        child: new Column(
+          // Home Page
+          children: <Widget>[
+            _buildPlayArea(),
+            _buildControlArea(),
+          ],
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -448,180 +681,22 @@ class GameScreenState extends State<GameScreen> {
         title: new Center(
           child: new Text("Liars Poker"),
         ),
+        actions: <Widget>[
+          IconButton(
+            icon: new Icon(Icons.settings),
+            onPressed: () {
+              setupScreen = new SetupScreen(player, opponent);
+              Navigator.push(
+                context,
+                new MaterialPageRoute(
+                  builder: (context) => setupScreen,
+                ),
+              );
+            },
+          ),
+        ],
       ),
-      body: new Container(
-        //color: Colors.teal ,
-        child: new Column(
-          // Home Page
-          children: <Widget>[
-            new Column(
-              // play area
-              children: <Widget>[
-                playerTitle(opponent),
-                new Center(child: opponent.build(context)),
-                playerTitle(player),
-                new Center(child: player.build(context)),
-                new Center(
-                  heightFactor: 1.2,
-                  widthFactor: 1.2,
-                  child: new Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    // current state
-                    children: <Widget>[
-                      new Text(
-                        'Current Bid: ',
-                        style: new TextStyle(fontSize: 20.0),
-                      ),
-                      new RaisedButton(
-                        child: new Text(
-                          highCount.toString(),
-                          style: new TextStyle(
-                              color: Colors.white, fontSize: 16.0),
-                        ),
-                        padding: const EdgeInsets.all(1.0),
-                      ),
-                      new RaisedButton(
-                        child: new Text(
-                          highCard.toString(),
-                          style: new TextStyle(
-                              color: Colors.white, fontSize: 16.0),
-                        ),
-                        padding: const EdgeInsets.all(1.0),
-                      ),
-                    ],
-                  ),
-                ),
-                new Column(
-                  children: <Widget>[
-                    new Text(
-                      'Game Messages:',
-                      style: new TextStyle(fontSize: 20.0),
-                    ),
-                    new SizedBox(
-                      height: 175.0,
-                      child: new ListView.builder(
-                        itemCount: gameMessages.length,
-                        controller: _scrollController,
-                        shrinkWrap: false,
-                        itemBuilder: (context, i) => new SizedBox(
-                              //width: 100.0,
-                              //height: 100.0,
-                              child: new Text(
-                                gameMessages[i].toString(),
-                                textScaleFactor: 1.0,
-                                style: new TextStyle(
-                                  letterSpacing: 1.5,
-                                  fontSize: 12.0,
-                                  //height: 2.0,
-                                ),
-                              ),
-                            ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ), //Play Area
-
-            new Column(
-              // Control Area
-              children: <Widget>[
-                new Row(
-                  // inputs
-                  children: <Widget>[
-                    new Column(
-                      children: <Widget>[
-                        new Row(
-                          children: <Widget>[
-                            new Text(
-                              'Count: ${iCount.toString()}',
-                              style: new TextStyle(
-                                fontSize: 20.0,
-                              ),
-                            ),
-                            new CupertinoSlider(
-                                value: iCount.toDouble(),
-                                min: highCount.toDouble(),
-                                max: highCount.toDouble() + 4.0,
-                                divisions: 4,
-                                onChanged: (double countValue) {
-                                  setState(() {
-                                    iCount = countValue.toInt();
-                                  });
-                                }),
-                          ],
-                        ),
-                        new Row(
-                          children: <Widget>[
-                            new Text(
-                              ' Card: ${iCard.toString()}',
-                              style: new TextStyle(
-                                fontSize: 20.0,
-                              ),
-                            ),
-                            new CupertinoSlider(
-                                value: iCard.toDouble(),
-                                min: 0.0,
-                                max: maxCard.toDouble(),
-                                divisions: maxCard,
-                                onChanged: (double cardValue) {
-                                  setState(() {
-                                    iCard = cardValue.toInt();
-                                  });
-                                }),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                new Row(
-                  // actions
-                  children: <Widget>[
-                    new RaisedButton(
-                      child: new Text(
-                        "Call",
-                        style:
-                            new TextStyle(color: Colors.white, fontSize: 20.0),
-                      ),
-                      color: Colors.red,
-                      padding: const EdgeInsets.all(20.0),
-                      onPressed: _handleCall,
-                    ),
-                    new RaisedButton(
-                      child: new Text(
-                        "Setup",
-                        style:
-                            new TextStyle(color: Colors.white, fontSize: 20.0),
-                      ),
-                      color: Colors.brown,
-                      padding: const EdgeInsets.all(20.0),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          new MaterialPageRoute(
-                              builder: (context) => setupScreen),
-                        );
-                      },
-                    ),
-                    new RaisedButton(
-                      child: new Text(
-                        "Bid",
-                        style:
-                            new TextStyle(color: Colors.white, fontSize: 20.0),
-                      ),
-                      color: Colors.blue,
-                      padding: const EdgeInsets.all(20.0),
-                      onPressed: _handleBid,
-                    ),
-                    _buildRedealButton(),
-                  ],
-                ),
-              ], // control area children
-            ),
-          ],
-        ),
-      ),
+      body: _buildBody(),
     );
   } // build
 }
