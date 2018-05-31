@@ -23,35 +23,6 @@
     
     
     
-disable Call and Bid buttons
-
-  Widget _buildBidButton() {
-    return new RaisedButton(
-      child: new Text(
-        "Bid",
-                        style:
-                            new TextStyle(color: Colors.white, fontSize: 20.0),
-                      ),
-                      color: Colors.blue,
-                      padding: const EdgeInsets.all(20.0),
-      onPressed: (winner == null) ? _handleBid : null,
-    );
-  }
-
-
-
-  Widget _buildRedealButton() {
-    return new RaisedButton(
-      child: new Text(
-        "Call",
-                        style:
-                            new TextStyle(color: Colors.white, fontSize: 20.0),
-                      ),
-                      color: Colors.red,
-                      padding: const EdgeInsets.all(20.0),
-      onPressed: (winner == null) ? _handleCall : null,
-    );
-  }
 
 
 Need
