@@ -1,6 +1,8 @@
 
 ScrollController not attached to any scroll views.
     no message widget in LS mode //when bidding in LS mode
+    
+Multi line message string messing up scroll    
 
 Need
 scrollController → FixedExtentScrollController
