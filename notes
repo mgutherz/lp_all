@@ -1,29 +1,6 @@
 
-
-    final Orientation orientation = MediaQuery.of(context).orientation;
-    final bool isLandscape = orientation == Orientation.landscape;
-    
-    _buildBody(){
-    
-    if LANDSCAPE {
-        return new row (
-          children [
-            _buildPlayArea,
-            _buildControlArea,
-            ],
-           );
-      }else{
-        return new column (
-          children [
-            _buildPlayArea,
-            _buildControlArea,
-            ],
-           );
-      }
-    
-    
-    
-
+ScrollController not attached to any scroll views.
+    no message widget in LS mode
 
 Need
 scrollController → FixedExtentScrollController
