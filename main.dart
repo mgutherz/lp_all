@@ -505,25 +505,99 @@ class GameScreenState extends State<GameScreen> {
 
   Widget _buildControlAreaLS() {
     return new Container(
+      height: 380.0,
+      width: 367.0,
       child: new Column(
         children: <Widget>[
-          new Text('Control Area'),
-          new Row(
-            // actions
-            children: <Widget>[
-              _buildCalllButton(),
-              new RaisedButton(
+          new Text(
+            'Game Messages:',
+            style: new TextStyle(fontSize: 20.0),
+          ),
+          /*new SizedBox(
+            height: 175.0,
+            width: 175.0,
+            child: new ListView.builder(
+              itemCount: gameMessages.length,
+              controller: _scrollController,
+              shrinkWrap: false,
+              itemBuilder: (context, i) => new SizedBox(
+                //width: 100.0,
+                //height: 100.0,
                 child: new Text(
-                  "",
-                  style: new TextStyle(color: Colors.white, fontSize: 20.0),
+                  gameMessages[i].toString(),
+                  textScaleFactor: 1.0,
+                  style: new TextStyle(
+                    letterSpacing: 1.5,
+                    fontSize: 12.0,
+                    //height: 2.0,
+                  ),
                 ),
-                color: Colors.transparent,
-                padding: const EdgeInsets.all(20.0),
-                onPressed: () {},
               ),
-              _buildBidButton(),
-              _buildRedealButton(),
+            ),
+          ),*/
+          new Row(
+            children: <Widget>[
+              new Text(
+                'Count: ${iCount.toString()}',
+                style: new TextStyle(
+                  fontSize: 20.0,
+                ),
+              ),
+              new CupertinoSlider(
+                  value: iCount.toDouble(),
+                  min: highCount.toDouble(),
+                  max: highCount.toDouble() + 4.0,
+                  divisions: 4,
+                  onChanged: (double countValue) {
+                    setState(() {
+                      iCount = countValue.toInt();
+                    });
+                  }),
             ],
+          ),
+          new Row(
+            children: <Widget>[
+              new Text(
+                ' Card: ${iCard.toString()}',
+                style: new TextStyle(
+                  fontSize: 20.0,
+                ),
+              ),
+              new CupertinoSlider(
+                  value: iCard.toDouble(),
+                  min: 0.0,
+                  max: maxCard.toDouble(),
+                  divisions: maxCard,
+                  onChanged: (double cardValue) {
+                    setState(() {
+                      iCard = cardValue.toInt();
+                    });
+                  }),
+            ],
+          ),
+          new Transform(
+            transform: new Matrix4.identity()..scale(1.0,1.0),
+            child: new Row(
+              // actions
+              children: <Widget>[
+                _buildCalllButton(),
+                new SizedBox(
+                  height: 50.0,
+                  width: 50.0,
+                ),
+                /*new RaisedButton(
+                  child: new Text(
+                    "",
+                    style: new TextStyle(color: Colors.white, fontSize: 20.0),
+                  ),
+                  color: Colors.transparent,
+                  padding: const EdgeInsets.all(2.0),
+                  onPressed: () {},
+                ),*/
+                _buildBidButton(),
+                _buildRedealButton(),
+              ],
+            ),
           ),
           // Control Area
         ],
@@ -602,7 +676,7 @@ class GameScreenState extends State<GameScreen> {
 
   Widget _buildPlayAreaLS() {
     return new Container(
-      height: 250.0,
+      height: 300.0,
       width: 300.0,
       child: new Column(
         children: <Widget>[
@@ -655,8 +729,14 @@ class GameScreenState extends State<GameScreen> {
         child: new Row(
           // Home Page
           children: <Widget>[
-            _buildPlayAreaLS(), // not ok
-            _buildControlAreaLS(), // not ok
+            new Transform(
+              child: _buildPlayAreaLS(),
+              transform: new Matrix4.identity()..scale(1.0,1.0),// not ok,
+            ), // not ok
+            new Transform(
+              child: _buildControlAreaLS(),
+              transform: new Matrix4.identity()..scale(1.0,1.0),// not ok,
+            ),
           ],
         ),
       );
