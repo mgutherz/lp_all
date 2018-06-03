@@ -2,7 +2,10 @@
 ScrollController not attached to any scroll views.
     no message widget in LS mode //when bidding in LS mode
     
-Multi line message string messing up scroll    
+Not! <Multi line message string messing up scroll    >
+
+Advice should be popup. TOAST
+    https://stackoverflow.com/questions/45948168/how-to-create-toast-in-flutter
 
 Need
 scrollController → FixedExtentScrollController
