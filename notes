@@ -19,6 +19,8 @@ List<String> gameMessages = new List.filled(3, '');
 Advice should be popup. TOAST
     https://stackoverflow.com/questions/45948168/how-to-create-toast-in-flutter
     
+   
+    
 gKey = new GlobalKey<ScaffoldState>(); // with gameMessages = new
 
 ...
@@ -35,5 +37,43 @@ gKey.currentState.showSnackBar(new SnackBar(
       key: gKey,    
 
 
+ *Dialog? (Rules?)
+ 
+ In handleBid...
+ if (highCount < handSize) {
+        msg = msg + '\t' + (highCount + 1).toString() + ' of any card\n';
+      }
+      Hint(msg);
+      Navigator.push(
+                context,
+                new MaterialPageRoute(
+                  builder: (context) => Hint(
+		  	message: msg,
+		  ),
+                ),
+              );
+	
+<new>
+
+Widget Hint(String msg){	      
+new AlertDialog(
+        title: new Text('Hint'),
+        content: new SingleChildScrollView(
+          child: new ListBody(
+            children: <Widget>[
+              new Text(msg),
+                          ],
+          ),
+        ),
+        actions: <Widget>[
+          new FlatButton(
+            child: new Text('Dismiss'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );	      
+	      
 Need
     Highlight active element in selection list.
