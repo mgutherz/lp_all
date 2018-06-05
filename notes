@@ -3,19 +3,6 @@ ScrollController not attached to any scroll views.
     no message widget in LS mode //when bidding in LS mode
 Not! <Multi line message string messing up scroll    >
 
-List<String> gameMessages = new List.filled(3, '');
-
-  void logMessage(String msg) {
-    setState(() {
-	gameMessages.removeAt(0);
-      gameMessages.add(msg);
-
-      build(context);
-      //_toEnd();
-    });
-  }
-
-
 Advice should be popup. TOAST
     https://stackoverflow.com/questions/45948168/how-to-create-toast-in-flutter
     
@@ -75,22 +62,8 @@ new AlertDialog(
         ],
       );	      
 	   
-<CLEAR WINS>
-in lp_player.dart
-
-  void clearWins() {
-    totalWins = 0;
-  }
   
-In setup_screen.dart
 
-  void saveConfig() {
-    player.setName(myController.text);
-    opponent.setAIIndex(opponentAI);
-    opponent.setName(aiList[opponentAI]);
-    player.clearWins();
-    opponent.clearWins();
-  }
 
 
 Need
