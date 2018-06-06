@@ -1,12 +1,8 @@
-
-ScrollController not attached to any scroll views.
-    no message widget in LS mode //when bidding in LS mode
-Not! <Multi line message string messing up scroll    >
+gameMessages should be list of text objects/array of text widgets.  Different justification foreach player
+Col children: Array of widgets
 
 Advice should be popup. TOAST
     https://stackoverflow.com/questions/45948168/how-to-create-toast-in-flutter
-    
-   
     
 gKey = new GlobalKey<ScaffoldState>(); // with gameMessages = new
 
