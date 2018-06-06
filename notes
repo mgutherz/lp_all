@@ -1,5 +1,6 @@
 gameMessages should be list of text objects/array of text widgets.  Different justification foreach player
 Col children: Array of widgets
+different backgrounds
 
 Advice should be popup. TOAST
     https://stackoverflow.com/questions/45948168/how-to-create-toast-in-flutter
