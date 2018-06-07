@@ -2,6 +2,40 @@ gameMessages should be list of text objects/array of text widgets.  Different ju
 Col children: Array of widgets
 different backgrounds
 
+main.dart
+
+...
+ List<Widget> gameMessages = new List();
+ 
+ ...
+ 
+   void logMessage(String msg) {
+   
+    setState(() {
+      gameMessages.add(
+		new Text(
+                    msg,
+                    textScaleFactor: 1.0,
+		    textAlign: (activePlayer == player) ? left : right,
+                    style: new TextStyle(
+                      letterSpacing: 1.5,
+                      fontSize: 12.0,
+                      //height: 2.0,
+                    ),     
+      );
+
+      build(context);
+      //_toEnd();
+    });
+  }
+
+<buildControlArea>
+new col(
+	children: gameMessages,
+	
+	),
+====
+
 Advice should be popup. TOAST
     https://stackoverflow.com/questions/45948168/how-to-create-toast-in-flutter
     
