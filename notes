@@ -16,7 +16,7 @@ main.dart
 		new Text(
                     msg,
                     textScaleFactor: 1.0,
-		    textAlign: (activePlayer == player) ? left : right,
+		    textAlign: (activePlayer == player) ? right : left,
                     style: new TextStyle(
                       letterSpacing: 1.5,
                       fontSize: 12.0,
